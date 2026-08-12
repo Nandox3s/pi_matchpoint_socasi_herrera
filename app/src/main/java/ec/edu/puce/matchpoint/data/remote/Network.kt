@@ -13,6 +13,7 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import kotlinx.coroutines.runBlocking
 import ec.edu.puce.matchpoint.data.models.CognitoAuthRequest
+import java.util.concurrent.TimeUnit
 
 class AuthInterceptor(private val session: SessionManager) : Interceptor {
     override fun intercept(chain: Interceptor.Chain) = chain.proceed(chain.request().newBuilder().apply {
@@ -63,8 +64,9 @@ class TokenAuthenticator(
 class Network(session: SessionManager) {
     private val gson = Gson()
     private val logging = HttpLoggingInterceptor().apply { level = if (BuildConfig.DEBUG) HttpLoggingInterceptor.Level.BASIC else HttpLoggingInterceptor.Level.NONE }
-    val cognito: CognitoApiService = Retrofit.Builder().baseUrl("https://cognito-idp.${BuildConfig.COGNITO_REGION}.amazonaws.com/").client(OkHttpClient.Builder().addInterceptor(logging).build()).addConverterFactory(GsonConverterFactory.create(gson)).build().create(CognitoApiService::class.java)
-    private val client = OkHttpClient.Builder().addInterceptor(AuthInterceptor(session)).authenticator(TokenAuthenticator(session,cognito)).addInterceptor(logging).build()
+    private fun OkHttpClient.Builder.withTimeouts() = connectTimeout(10,TimeUnit.SECONDS).readTimeout(20,TimeUnit.SECONDS).writeTimeout(20,TimeUnit.SECONDS).callTimeout(30,TimeUnit.SECONDS)
+    val cognito: CognitoApiService = Retrofit.Builder().baseUrl("https://cognito-idp.${BuildConfig.COGNITO_REGION.ifBlank{"us-east-1"}}.amazonaws.com/").client(OkHttpClient.Builder().withTimeouts().addInterceptor(logging).build()).addConverterFactory(GsonConverterFactory.create(gson)).build().create(CognitoApiService::class.java)
+    private val client = OkHttpClient.Builder().withTimeouts().addInterceptor(AuthInterceptor(session)).authenticator(TokenAuthenticator(session,cognito)).addInterceptor(logging).build()
     private val retrofit = Retrofit.Builder().baseUrl(BuildConfig.API_BASE_URL).client(client).addConverterFactory(GsonConverterFactory.create(gson)).build()
     val users: UsersApiService = retrofit.create(UsersApiService::class.java)
     val matchPoint: MatchPointApiService = retrofit.create(MatchPointApiService::class.java)

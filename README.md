@@ -12,6 +12,8 @@ El código está organizado en `data/models`, `data/remote`, `data/repository`, 
 
 ## Configuración
 
+Consulta también la [guía de integración y diagnóstico AWS](docs/AWS-INTEGRATION.md).
+
 1. Copia `local.properties.example` como `local.properties`.
 2. Configura `sdk.dir`, `COGNITO_APP_CLIENT_ID` y, si aplica, región/User Pool. Debe ser un App Client nativo/público sin secret y con `ALLOW_USER_AUTH` habilitado. La app realiza `USER_AUTH`, solicita el desafío `PASSWORD` y lo responde sin guardar la contraseña.
 3. Para emulador usa `API_BASE_URL=http://10.0.2.2:9090/`; para dispositivo físico cambia `10.0.2.2` por la IP LAN del equipo.
