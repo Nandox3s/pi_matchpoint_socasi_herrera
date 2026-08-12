@@ -96,6 +96,19 @@ Verifica la configuración en <http://localhost:3000/api/health> antes de intent
 4. **Production Branch**: `main`. Vercel publica en el dominio principal lo que haya en esa rama.
 5. Redespliega y abre `/api/health`. Debe responder `"ok": true`.
 
+## AWS deployment
+
+El despliegue AWS conserva Next.js 16 con SSR y Route Handlers dentro de Docker en EC2; CloudFront publica la aplicación mediante HTTPS y reenvía las cookies de sesión. No utiliza S3 static hosting ni migra el backend.
+
+```bash
+cd web
+cp .env.production.example .env.production
+# Completa los valores reales sin commitear el archivo.
+bash scripts/deploy-ec2.sh
+```
+
+La configuración de EC2, CloudFront y Security Group está documentada en [AWS_DEPLOYMENT.md](./AWS_DEPLOYMENT.md). El desarrollo local continúa usando `.env.local`; Vercel mantiene su configuración propia y AWS usa `.env.production`.
+
 ## Errores comunes
 
 | Síntoma | Causa |
