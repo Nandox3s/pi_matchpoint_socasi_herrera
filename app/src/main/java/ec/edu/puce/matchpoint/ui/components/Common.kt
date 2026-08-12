@@ -1,12 +1,15 @@
 package ec.edu.puce.matchpoint.ui.components
 
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.background
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.*
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.unit.dp
 import ec.edu.puce.matchpoint.data.models.*
 import ec.edu.puce.matchpoint.ui.UiState
@@ -18,11 +21,13 @@ fun MatchStatus.label()=when(this){MatchStatus.PENDING->"Pendiente";MatchStatus.
 fun money(value:Double)=String.format(java.util.Locale.US,"$%.2f / hora",value)
 
 @Composable fun StatusChip(text:String,positive:Boolean=true){Surface(color=if(positive)MaterialTheme.colorScheme.primaryContainer else MaterialTheme.colorScheme.surfaceVariant,shape=MaterialTheme.shapes.small){Text(text,Modifier.padding(horizontal=10.dp,vertical=5.dp),style=MaterialTheme.typography.labelMedium,color=if(positive)MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant)}}
+@Composable fun MatchPointHero(eyebrow:String,title:String,subtitle:String,icon: @Composable () -> Unit){Box(Modifier.fillMaxWidth().background(Brush.linearGradient(listOf(MaterialTheme.colorScheme.primary,MaterialTheme.colorScheme.tertiary)),MaterialTheme.shapes.extraLarge).padding(24.dp)){Column(Modifier.fillMaxWidth()){Row(verticalAlignment=Alignment.CenterVertically){Surface(shape=CircleShape,color=Color.White.copy(alpha=.18f)){Box(Modifier.padding(12.dp)){icon()}};Spacer(Modifier.width(12.dp));Text(eyebrow.uppercase(),style=MaterialTheme.typography.labelLarge,color=Color.White.copy(alpha=.82f))};Spacer(Modifier.height(20.dp));Text(title,style=MaterialTheme.typography.headlineMedium,color=Color.White);Text(subtitle,style=MaterialTheme.typography.bodyLarge,color=Color.White.copy(alpha=.82f),modifier=Modifier.padding(top=4.dp))}}}
+@Composable fun ScreenHeading(title:String,subtitle:String?=null){Column(Modifier.fillMaxWidth().padding(top=10.dp,bottom=14.dp)){Text(title,style=MaterialTheme.typography.headlineMedium);subtitle?.let{Text(it,color=MaterialTheme.colorScheme.onSurfaceVariant,modifier=Modifier.padding(top=3.dp))}}}
 @Composable fun EmptyState(title:String,message:String,icon: @Composable () -> Unit={Icon(Icons.Default.SportsBasketball,null,Modifier.size(52.dp))},action:(()->Unit)?=null){Column(Modifier.fillMaxWidth().padding(40.dp),horizontalAlignment=Alignment.CenterHorizontally){icon();Spacer(Modifier.height(14.dp));Text(title,style=MaterialTheme.typography.titleLarge);Text(message,style=MaterialTheme.typography.bodyMedium,color=MaterialTheme.colorScheme.onSurfaceVariant);action?.let{TextButton(it){Text("Limpiar filtros")}}}}
 @Composable fun LoadingState(){Box(Modifier.fillMaxSize(),contentAlignment=Alignment.Center){CircularProgressIndicator()}}
 @Composable fun ErrorState(message:String,onRetry:(()->Unit)?=null){Column(Modifier.fillMaxWidth().padding(32.dp),horizontalAlignment=Alignment.CenterHorizontally){Icon(Icons.Default.CloudOff,null,tint=MaterialTheme.colorScheme.error);Text(message,Modifier.padding(vertical=12.dp),color=MaterialTheme.colorScheme.error);onRetry?.let{OutlinedButton(it){Text("Reintentar")}}}}
 @Composable fun <T> StateView(state:UiState<T>,empty:(T)->Boolean={false},emptyContent: @Composable () -> Unit={EmptyState("Sin resultados","Todavía no hay información disponible.")},onRetry:(()->Unit)?=null,content: @Composable (T) -> Unit){when(state){UiState.Idle,UiState.Loading->LoadingState();is UiState.Error->ErrorState(state.message,onRetry);is UiState.Success->if(empty(state.data))emptyContent()else content(state.data)}}
-@Composable fun PrimaryButton(text:String,onClick:()->Unit,enabled:Boolean=true,modifier:Modifier=Modifier){Button(onClick,modifier.fillMaxWidth().height(52.dp),enabled=enabled){Text(text)}}
+@Composable fun PrimaryButton(text:String,onClick:()->Unit,enabled:Boolean=true,modifier:Modifier=Modifier){Button(onClick,modifier.fillMaxWidth().height(56.dp),enabled=enabled,shape=MaterialTheme.shapes.medium){Text(text)}}
 @Composable fun ConfirmDialog(title:String,text:String,confirmText:String="Confirmar",onDismiss:()->Unit,onConfirm:()->Unit){AlertDialog(onDismissRequest=onDismiss,title={Text(title)},text={Text(text)},confirmButton={Button(onConfirm){Text(confirmText)}},dismissButton={TextButton(onDismiss){Text("Volver")}})}
 
 @Composable fun CourtCard(c:CourtResponse,onClick:()->Unit,manager:Boolean=false,onEdit:(()->Unit)?=null){ElevatedCard(onClick=onClick,modifier=Modifier.fillMaxWidth().padding(vertical=7.dp)){Column(Modifier.padding(18.dp)){Row(Modifier.fillMaxWidth(),horizontalArrangement=Arrangement.SpaceBetween){Text(c.name,style=MaterialTheme.typography.titleLarge,modifier=Modifier.weight(1f));StatusChip(if(c.active)"Activa" else "Inactiva",c.active)};Spacer(Modifier.height(10.dp));Text("📍 ${c.sector}   🏀 ${c.sportType.label()}");Text("Piso ${c.floorType} · Parqueadero: ${if(c.hasParking)"Sí" else "No"}",color=MaterialTheme.colorScheme.onSurfaceVariant);Text(money(c.pricePerHour),style=MaterialTheme.typography.titleMedium,color=MaterialTheme.colorScheme.primary,modifier=Modifier.padding(top=12.dp));if(manager&&onEdit!=null)TextButton(onEdit){Icon(Icons.Default.Edit,null);Text(" Editar") }else TextButton(onClick){Text("Ver disponibilidad")}}}}
