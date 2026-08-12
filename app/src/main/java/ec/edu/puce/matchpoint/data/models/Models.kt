@@ -27,4 +27,5 @@ data class MeResponse(val username: String, val sub: String, val email: String?,
 
 data class CognitoAuthRequest(val AuthFlow: String, val ClientId: String, val AuthParameters: Map<String, String>)
 data class CognitoAuthResult(val AccessToken: String?, val IdToken: String?, val RefreshToken: String?, val ExpiresIn: Int?, val TokenType: String?)
-data class CognitoAuthResponse(val AuthenticationResult: CognitoAuthResult?, val ChallengeName: String? = null)
+data class CognitoAuthResponse(val AuthenticationResult: CognitoAuthResult?, val ChallengeName: String? = null, val Session: String? = null)
+data class CognitoChallengeRequest(val ChallengeName: String, val ClientId: String, val Session: String, val ChallengeResponses: Map<String, String>)

@@ -40,4 +40,6 @@ interface MatchPointApiService {
 interface CognitoApiService {
     @Headers("Content-Type: application/x-amz-json-1.1", "X-Amz-Target: AWSCognitoIdentityProviderService.InitiateAuth")
     @POST("/") suspend fun authenticate(@Body body: CognitoAuthRequest): CognitoAuthResponse
+    @Headers("Content-Type: application/x-amz-json-1.1", "X-Amz-Target: AWSCognitoIdentityProviderService.RespondToAuthChallenge")
+    @POST("/") suspend fun respondToChallenge(@Body body: CognitoChallengeRequest): CognitoAuthResponse
 }
