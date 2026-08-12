@@ -26,14 +26,18 @@ class MainActivity:ComponentActivity(){override fun onCreate(savedInstanceState:
     LaunchedEffect(role){nav.navigate(if(role==null)Route.Login.path else Route.Home.path){popUpTo(0)}}
     val back by nav.currentBackStackEntryAsState();val current=back?.destination?.route;val snackbar=remember{SnackbarHostState()};val message by content.message.collectAsState()
     LaunchedEffect(message){message?.let{snackbar.showSnackbar(it);content.message.value=null}}
-    Scaffold(topBar={if(role!=null)TopAppBar(title={Text(current?.replaceFirstChar{it.uppercase()}?:"MatchPoint")},actions={IconButton({auth.logout()}){Icon(Icons.Default.Logout,"Cerrar sesión")}})},bottomBar={if(role!=null)NavigationBar{listOf(Route.Home to Icons.Default.Home,Route.Courts to Icons.Default.Place,Route.Tournaments to Icons.Default.EmojiEvents,Route.Profile to Icons.Default.Person).forEach{(r,icon)->NavigationBarItem(current==r.path,{nav.navigate(r.path){launchSingleTop=true}}, {Icon(icon,r.path)},label={Text(r.path)})}}},snackbarHost={SnackbarHost(snackbar)}){padding->
+    val username=(applicationContainer().session.username)
+    val destinations=if(role==UserRole.PLAYER)listOf(Triple(Route.Home,Icons.Default.Home,"Inicio"),Triple(Route.Courts,Icons.Default.Place,"Canchas"),Triple(Route.Reservations,Icons.Default.Event,"Reservas"),Triple(Route.Tournaments,Icons.Default.EmojiEvents,"Torneos"),Triple(Route.Profile,Icons.Default.Person,"Perfil"))else listOf(Triple(Route.Home,Icons.Default.Home,"Inicio"),Triple(Route.Courts,Icons.Default.Place,"Canchas"),Triple(Route.Tournaments,Icons.Default.EmojiEvents,"Torneos"),Triple(Route.Profile,Icons.Default.Person,"Perfil"))
+    Scaffold(topBar={if(role!=null)TopAppBar(title={Text("MatchPoint")})},bottomBar={if(role!=null)NavigationBar{destinations.forEach{(r,icon,label)->NavigationBarItem(current==r.path,{nav.navigate(r.path){popUpTo(Route.Home.path){saveState=true};launchSingleTop=true;restoreState=true}}, {Icon(icon,label)},label={Text(label)})}}},snackbarHost={SnackbarHost(snackbar)}){padding->
         NavHost(nav,Route.Login.path,Modifier.padding(padding)){
             composable(Route.Login.path){LoginScreen(auth)}
-            composable(Route.Home.path){role?.let{HomeScreen(it,nav::navigate)}}
-            composable(Route.Courts.path){role?.let{CourtsScreen(content,it)}}
+            composable(Route.Home.path){role?.let{HomeScreen(content,it,username,nav::navigate)}}
+            composable(Route.Courts.path){role?.let{CourtsScreen(content,it,username)}}
             composable(Route.Reservations.path){ReservationsScreen(content)}
-            composable(Route.Tournaments.path){role?.let{TournamentsScreen(content,it)}}
-            composable(Route.Profile.path){ProfileScreen(content)}
+            composable(Route.Tournaments.path){role?.let{TournamentsScreen(content,it,username)}}
+            composable(Route.Profile.path){role?.let{ProfileScreen(content,it,auth::logout)}}
         }
     }
 }
+
+@Composable private fun applicationContainer()=(androidx.compose.ui.platform.LocalContext.current.applicationContext as MatchPointApplication).container
