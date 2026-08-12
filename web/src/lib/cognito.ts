@@ -8,8 +8,8 @@ import {
 
 /**
  * Reproduce el flujo de AuthRepository.login del cliente Android:
- * InitiateAuth(USER_AUTH, PREFERRED_CHALLENGE=PASSWORD) -> RespondToAuthChallenge(PASSWORD).
- * El App Client debe ser publico (sin secret) y tener ALLOW_USER_AUTH habilitado.
+ * InitiateAuth(USER_PASSWORD_AUTH).
+ * El App Client debe ser publico (sin secret) y tener ALLOW_USER_PASSWORD_AUTH habilitado.
  */
 
 interface CognitoAuthResult {
@@ -49,7 +49,7 @@ const FRIENDLY_ERRORS: Record<string, string> = {
   PasswordResetRequiredException: "Debes restablecer tu contraseña en Cognito.",
   TooManyRequestsException: "Demasiados intentos. Espera un momento e inténtalo de nuevo.",
   InvalidParameterException:
-    "Cognito rechazó la petición. Verifica que el App Client sea público (sin secret) y tenga ALLOW_USER_AUTH habilitado.",
+    "Cognito rechazó la petición. Verifica que el App Client sea público (sin secret) y tenga ALLOW_USER_PASSWORD_AUTH habilitado.",
   ResourceNotFoundException:
     "El App Client de Cognito no existe en esta región. Revisa COGNITO_APP_CLIENT_ID y COGNITO_REGION.",
 };
@@ -84,9 +84,9 @@ export async function login(username: string, password: string): Promise<Cognito
   assertCognitoConfigured();
 
   const start = await callCognito("InitiateAuth", {
-    AuthFlow: "USER_AUTH",
+    AuthFlow: "USER_PASSWORD_AUTH",
     ClientId: COGNITO_APP_CLIENT_ID,
-    AuthParameters: { USERNAME: username, PREFERRED_CHALLENGE: "PASSWORD" },
+    AuthParameters: { USERNAME: username, PASSWORD: password },
   });
 
   let response = start;
