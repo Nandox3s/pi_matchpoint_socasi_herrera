@@ -24,7 +24,7 @@ export const COGNITO_ENDPOINT = `https://cognito-idp.${COGNITO_REGION}.amazonaws
 export function assertCognitoConfigured(): void {
   if (!COGNITO_APP_CLIENT_ID) {
     throw new Error(
-      "Falta COGNITO_APP_CLIENT_ID. Configúralo en las variables de entorno de Vercel (Settings → Environment Variables) o en web/.env.local para desarrollo.",
+      "Falta COGNITO_APP_CLIENT_ID. Configúralo en las variables de entorno del hosting o en web/.env.local para desarrollo.",
     );
   }
 }
