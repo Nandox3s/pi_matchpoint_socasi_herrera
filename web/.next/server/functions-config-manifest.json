@@ -1,0 +1,10 @@
+{
+  "version": 1,
+  "functions": {
+    "/api/auth/login": {},
+    "/api/auth/logout": {},
+    "/api/auth/session": {},
+    "/api/backend/[...path]": {},
+    "/api/health": {}
+  }
+}

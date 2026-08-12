@@ -1,0 +1,18 @@
+{
+  "/(app)/courts/page": "/courts",
+  "/(app)/dashboard/page": "/dashboard",
+  "/(app)/profile/page": "/profile",
+  "/(app)/reservations/page": "/reservations",
+  "/(app)/tournaments/page": "/tournaments",
+  "/_global-error/page": "/_global-error",
+  "/_not-found/page": "/_not-found",
+  "/api/auth/login/route": "/api/auth/login",
+  "/api/auth/logout/route": "/api/auth/logout",
+  "/api/auth/session/route": "/api/auth/session",
+  "/api/backend/[...path]/route": "/api/backend/[...path]",
+  "/api/health/route": "/api/health",
+  "/icon.svg/route": "/icon.svg",
+  "/login/page": "/login",
+  "/manifest.webmanifest/route": "/manifest.webmanifest",
+  "/page": "/"
+}
