@@ -1,0 +1,13 @@
+services:
+  matchpoint-web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: matchpoint-web:latest
+    restart: unless-stopped
+    env_file:
+      - .env.production
+    ports:
+      - "3000:3000"
+    extra_hosts:
+      - "host.docker.internal:host-gateway"

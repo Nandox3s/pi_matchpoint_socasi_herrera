@@ -8,7 +8,7 @@ import {
 } from "@/lib/config";
 
 /**
- * Diagnostico de despliegue. Abre /api/health en Vercel para saber, sin iniciar sesion,
+ * Diagnostico de despliegue. Abre /api/health en el hosting para saber, sin iniciar sesion,
  * si el backend responde y si las variables de entorno estan completas.
  * No expone secretos: solo indica si cada valor esta configurado.
  */
