@@ -18,7 +18,7 @@ android {
         versionCode = 1
         versionName = "1.0"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-        buildConfigField("String", "API_BASE_URL", "\"${config("API_BASE_URL", "http://10.0.2.2:9090/")}\"")
+        buildConfigField("String", "API_BASE_URL", "\"${config("API_BASE_URL", "http://18.234.231.25:9090/")}\"")
         buildConfigField("String", "COGNITO_REGION", "\"${config("COGNITO_REGION", "us-east-1")}\"")
         buildConfigField("String", "COGNITO_USER_POOL_ID", "\"${config("COGNITO_USER_POOL_ID")}\"")
         buildConfigField("String", "COGNITO_APP_CLIENT_ID", "\"${config("COGNITO_APP_CLIENT_ID")}\"")
