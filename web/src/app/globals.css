@@ -808,6 +808,44 @@ button:disabled {
   margin-top: 24px;
 }
 
+.login-banner {
+  margin-top: 22px;
+  text-align: left;
+}
+
+.auth-tabs {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 4px;
+  margin-top: 24px;
+  padding: 4px;
+  border-radius: 16px;
+  background: var(--surface-variant);
+}
+
+.auth-tabs button {
+  min-height: 44px;
+  border: 0;
+  border-radius: 12px;
+  background: transparent;
+  color: var(--on-surface-variant);
+  font-weight: 700;
+}
+
+.auth-tabs button[aria-selected="true"] {
+  background: var(--surface);
+  color: var(--primary);
+  box-shadow: var(--shadow);
+}
+
+.confirm-copy {
+  margin-top: 8px;
+}
+
+.login-security {
+  margin-top: 18px;
+}
+
 /* ---------- Torneo ---------- */
 
 .tabs {

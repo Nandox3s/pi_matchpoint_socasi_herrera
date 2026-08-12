@@ -52,10 +52,15 @@ const FRIENDLY_ERRORS: Record<string, string> = {
     "Cognito rechazó la petición. Verifica que el App Client sea público (sin secret) y tenga ALLOW_USER_AUTH habilitado.",
   ResourceNotFoundException:
     "El App Client de Cognito no existe en esta región. Revisa COGNITO_APP_CLIENT_ID y COGNITO_REGION.",
+  UsernameExistsException: "Ese nombre de usuario ya está registrado.",
+  CodeMismatchException: "El código de confirmación no es correcto.",
+  ExpiredCodeException: "El código expiró. Solicita uno nuevo.",
+  InvalidPasswordException: "La contraseña no cumple la política de seguridad de Cognito.",
+  LimitExceededException: "Se alcanzó el límite de intentos. Espera unos minutos.",
 };
 
 async function callCognito(
-  target: "InitiateAuth" | "RespondToAuthChallenge",
+  target: "InitiateAuth" | "RespondToAuthChallenge" | "SignUp" | "ConfirmSignUp" | "ResendConfirmationCode",
   body: unknown,
 ): Promise<CognitoAuthResponse> {
   const response = await fetch(COGNITO_ENDPOINT, {
@@ -78,6 +83,46 @@ async function callCognito(
   }
 
   return payload as CognitoAuthResponse;
+}
+
+export interface SignUpResult {
+  confirmed: boolean;
+  destination?: string;
+}
+
+export async function signUp(username: string, password: string, email: string): Promise<SignUpResult> {
+  assertCognitoConfigured();
+  const response = (await callCognito("SignUp", {
+    ClientId: COGNITO_APP_CLIENT_ID,
+    Username: username,
+    Password: password,
+    UserAttributes: [{ Name: "email", Value: email }],
+  })) as CognitoAuthResponse & {
+    UserConfirmed?: boolean;
+    CodeDeliveryDetails?: { Destination?: string };
+  };
+  return {
+    confirmed: response.UserConfirmed === true,
+    destination: response.CodeDeliveryDetails?.Destination,
+  };
+}
+
+export async function confirmSignUp(username: string, code: string): Promise<void> {
+  assertCognitoConfigured();
+  await callCognito("ConfirmSignUp", {
+    ClientId: COGNITO_APP_CLIENT_ID,
+    Username: username,
+    ConfirmationCode: code,
+  });
+}
+
+export async function resendConfirmationCode(username: string): Promise<string | undefined> {
+  assertCognitoConfigured();
+  const response = (await callCognito("ResendConfirmationCode", {
+    ClientId: COGNITO_APP_CLIENT_ID,
+    Username: username,
+  })) as CognitoAuthResponse & { CodeDeliveryDetails?: { Destination?: string } };
+  return response.CodeDeliveryDetails?.Destination;
 }
 
 export async function login(username: string, password: string): Promise<CognitoTokens> {

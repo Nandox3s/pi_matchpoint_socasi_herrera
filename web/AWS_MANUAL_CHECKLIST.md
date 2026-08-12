@@ -14,6 +14,8 @@ Usa valores reales obtenidos de AWS. Nunca pegues contraseñas, tokens, claves A
 - [ ] En AWS Console → Cognito → User pools, abrir el pool real de MatchPoint.
 - [ ] Anotar la región, el User Pool ID y el App Client ID.
 - [ ] Confirmar que el App Client es público, sin client secret, y admite `ALLOW_USER_AUTH` y `REFRESH_TOKEN_AUTH`.
+- [ ] Habilitar el auto-registro y la verificación por correo si se utilizará “Crear cuenta”.
+- [ ] Configurar una asignación segura de cuentas confirmadas al grupo `PLAYER`; nunca permitir autoasignación a `MANAGER` desde el navegador.
 - [ ] Confirmar que existen los grupos `PLAYER` y `MANAGER` y que los usuarios de prueba pertenecen al grupo correcto.
 - [ ] No guardar usuarios ni contraseñas en `.env.production`.
 
