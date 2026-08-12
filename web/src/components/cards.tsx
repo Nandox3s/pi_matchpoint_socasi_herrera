@@ -38,7 +38,7 @@ export function CourtCard({
       <p className="price" style={{ marginTop: 12 }}>
         {formatMoney(court.pricePerHour)} / hora
       </p>
-      <div className="btn-row" style={{ justifyContent: "flex-start", marginTop: 12 }}>
+      <div className="btn-row btn-row-inline">
         <button type="button" className="btn btn-text" onClick={onOpen}>
           Ver detalle
         </button>
@@ -72,7 +72,7 @@ export function ReservationCard({
       <p className="muted">
         🕒 {time} · ⏱ {reservation.durationMinutes} minutos
       </p>
-      <div className="btn-row" style={{ justifyContent: "flex-start", marginTop: 8 }}>
+      <div className="btn-row btn-row-inline">
         <button type="button" className="btn btn-text" onClick={onOpen}>
           Ver detalle
         </button>
@@ -99,7 +99,7 @@ export function TournamentCard({
       </p>
       {tournament.prize ? <p className="muted">Premio: {tournament.prize}</p> : null}
       {tournament.championTeamName ? <p className="price">🏅 Campeón: {tournament.championTeamName}</p> : null}
-      <div className="btn-row" style={{ justifyContent: "flex-start", marginTop: 8 }}>
+      <div className="btn-row btn-row-inline">
         <button type="button" className="btn btn-text" onClick={onOpen}>
           Ver torneo
         </button>
