@@ -1,0 +1,3 @@
+module.exports=[27572,a=>{"use strict";var b=a.i(7997);a.s(["default",0,function({children:a}){return(0,b.jsx)("html",{lang:"es",children:(0,b.jsx)("body",{children:a})})},"metadata",0,{title:"MatchPoint — Reservas y torneos",description:"Cliente web de MatchPoint: reserva canchas, gestiona torneos de eliminación directa y consulta tu perfil.",applicationName:"MatchPoint",appleWebApp:{capable:!0,title:"MatchPoint",statusBarStyle:"default"},formatDetection:{telephone:!1}},"viewport",0,{width:"device-width",initialScale:1,viewportFit:"cover",themeColor:[{media:"(prefers-color-scheme: light)",color:"#f7faf8"},{media:"(prefers-color-scheme: dark)",color:"#101512"}]}])},50645,function(a){a.n(a.i(27572))}];
+
+//# sourceMappingURL=src_app_layout_tsx_0r5yz5t._.js.map

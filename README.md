@@ -2,7 +2,7 @@
 
 > La [matriz de cumplimiento de la rúbrica P02](docs/RUBRICA-CHECKLIST.md) reúne requisitos, ADR, arquitectura, nube, negocio y preparación de la sustentación con evidencia verificable.
 
-Aplicación Android de reservas deportivas y torneos conectada al backend real MatchPoint mediante Nginx, Retrofit y AWS Cognito.
+**Aplicación Android** de reservas deportivas y torneos, desarrollada en Android Studio y conectada al backend real MatchPoint mediante Nginx, Retrofit y AWS Cognito. Es el producto principal del proyecto: define el contrato con el backend, los flujos por rol y las reglas de validación de las que derivan los demás clientes.
 
 ## Tecnologías y arquitectura
 
@@ -20,6 +20,8 @@ Consulta también la [guía de integración y diagnóstico AWS](docs/AWS-INTEGRA
 4. En el repositorio backend independiente crea `.env`, levanta `docker compose up -d --build` y confirma que Nginx escucha en 9090.
 5. Abre este proyecto en Android Studio o ejecuta `./gradlew assembleDebug`.
 
+`sdk.dir` es propio de cada máquina: en Windows apunta a `C:\Users\<usuario>\AppData\Local\Android\Sdk` y en macOS a `~/Library/Android/sdk`. Por eso `local.properties` no se versiona.
+
 No se versionan tokens, contraseñas, `.env`, `local.properties` ni keystores. Los logs HTTP son BASIC y nunca muestran cabeceras ni cuerpos.
 
 ## Roles y funcionalidades
@@ -31,7 +33,11 @@ El backend real solo expone `BASKET` como deporte. Las fechas se envían como `L
 
 ## Pruebas
 
-`./gradlew test` cubre validaciones de perfil, cancha, reserva, torneo y marcador, además del mapeo HTTP 401/403/409/503. Ejecuta también `./gradlew lint`.
+```bash
+./gradlew test assembleDebug lint
+```
+
+`test` cubre validaciones de perfil, cancha, reserva, torneo y marcador, además del mapeo HTTP 401/403/409/503: 17 pruebas en `ValidatorsTest`, `FormattersTest`, `ApiCallTest` y `ApiErrorMapperTest`.
 
 ## GitFlow
 
@@ -46,3 +52,9 @@ El desarrollo se realiza en ramas `feature/*` y se integra después en `develop`
 - `503/504`: microservicio temporalmente no disponible.
 
 Las capturas de pantalla quedan pendientes hasta ejecutar la app con usuarios Cognito reales.
+
+## Anexo: cliente web complementario
+
+En [`web/`](web/README.md) hay un cliente web desplegado en Vercel que **deriva de esta aplicación**, no la sustituye. La app Android es la fuente del contrato: `web/src/lib/types.ts` es espejo de `data/models/Models.kt`, `web/src/lib/validators.ts` lo es de `utils/Validators.kt`, y los mensajes de error replican `ApiErrorMapper`. Ambos clientes consumen el mismo gateway y el mismo App Client de Cognito.
+
+Se incorporó como evidencia adicional del criterio 4 (computación en la nube), donde demuestra un despliegue serverless real. **El criterio 2 de la rúbrica evalúa la aplicación móvil en Android Studio**, y esa evidencia sigue siendo íntegramente el proyecto Gradle de la raíz.
