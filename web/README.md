@@ -20,6 +20,18 @@ Beneficio adicional: el **access token nunca llega al navegador**. Vive en una c
 que solo la función serverless puede leer, y es esa función la que añade el `Authorization: Bearer`.
 Es más estricto que el cliente Android, que guarda el token en `SharedPreferences`.
 
+## Diseño mobile-first
+
+El uso principal es el teléfono, así que la base del CSS es móvil y escritorio es la adaptación
+(`@media (min-width: 900px)`):
+
+- **Navegación inferior fija** en móvil, igual que la `NavigationBar` de Android; en escritorio sube al encabezado.
+- **Diálogos como hoja inferior** (*bottom sheet*) con tirador y animación; en escritorio son tarjeta centrada.
+- Objetivos táctiles de 48px e inputs a **16px exactos** — por debajo de eso iOS hace zoom al enfocar.
+- Zonas seguras respetadas con `viewportFit: "cover"` + `env(safe-area-inset-*)`, para que el FAB,
+  el toast y la barra inferior no queden bajo el notch ni bajo la barra de gestos.
+- `manifest.webmanifest` e iconos: se puede **agregar a la pantalla de inicio** y abrir sin barra del navegador.
+
 ## Arquitectura
 
 ```
