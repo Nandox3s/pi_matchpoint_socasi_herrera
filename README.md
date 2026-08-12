@@ -1,15 +1,8 @@
-# MatchPoint
+# MatchPoint Mobile
 
 > La [matriz de cumplimiento de la rúbrica P02](docs/RUBRICA-CHECKLIST.md) reúne requisitos, ADR, arquitectura, nube, negocio y preparación de la sustentación con evidencia verificable.
 
-Dos clientes sobre el mismo backend real MatchPoint (Nginx + Spring Boot + PostgreSQL + AWS Cognito):
-
-| Cliente | Ubicación | Despliegue |
-|---|---|---|
-| Android (Kotlin/Compose) | raíz del repositorio | APK vía `./gradlew assembleDebug` |
-| Web (Next.js) | [`web/`](web/README.md) | Vercel |
-
-Ambos consumen los mismos endpoints, el mismo App Client de Cognito y las mismas reglas de rol.
+**Aplicación Android** de reservas deportivas y torneos, desarrollada en Android Studio y conectada al backend real MatchPoint mediante Nginx, Retrofit y AWS Cognito. Es el producto principal del proyecto: define el contrato con el backend, los flujos por rol y las reglas de validación de las que derivan los demás clientes.
 
 ## Tecnologías y arquitectura
 
@@ -25,24 +18,9 @@ El código está organizado en `data/models`, `data/remote`, `data/repository`, 
 4. En el repositorio backend independiente crea `.env`, levanta `docker compose up -d --build` y confirma que Nginx escucha en 9090.
 5. Abre este proyecto en Android Studio o ejecuta `./gradlew assembleDebug`.
 
+`sdk.dir` es propio de cada máquina: en Windows apunta a `C:\Users\<usuario>\AppData\Local\Android\Sdk` y en macOS a `~/Library/Android/sdk`. Por eso `local.properties` no se versiona.
+
 No se versionan tokens, contraseñas, `.env`, `local.properties` ni keystores. Los logs HTTP son BASIC y nunca muestran cabeceras ni cuerpos.
-
-## Cliente web (Vercel)
-
-El código vive en [`web/`](web/README.md) y su guía completa de despliegue está en ese README.
-Resumen:
-
-1. En Vercel, *Settings → Build and Deployment → **Root Directory*** debe ser `web`. Si queda
-   vacío, Vercel no encuentra proyecto web en la raíz (es Gradle) y el dominio responde `404 NOT_FOUND`.
-2. Variables de entorno en Vercel: `API_BASE_URL`, `COGNITO_REGION`, `COGNITO_APP_CLIENT_ID` y,
-   opcionalmente, `COGNITO_USER_POOL_ID`. Ninguna usa `NEXT_PUBLIC_`: solo se leen en el servidor.
-3. La rama de producción es `main`.
-4. `/api/health` verifica, sin iniciar sesión, que el gateway responde y que las variables están puestas.
-
-El backend expone HTTP puro y Vercel sirve HTTPS, así que el navegador **no** puede llamarlo
-directamente (mixed content). Todas las peticiones pasan por la función serverless `/api/backend/*`,
-que corre en el servidor, adjunta el `Bearer` y refresca el token ante un 401. El access token queda
-en una cookie `httpOnly` y nunca es accesible desde JavaScript.
 
 ## Roles y funcionalidades
 
@@ -53,9 +31,11 @@ El backend real solo expone `BASKET` como deporte. Las fechas se envían como `L
 
 ## Pruebas
 
-`./gradlew test` cubre validaciones de perfil, cancha, reserva, torneo y marcador, además del mapeo HTTP 401/403/409/503. Ejecuta también `./gradlew lint`.
+```bash
+./gradlew test assembleDebug lint
+```
 
-En el cliente web, `npm run build` (dentro de `web/`) ejecuta la verificación de tipos de TypeScript sobre todo el proyecto.
+`test` cubre validaciones de perfil, cancha, reserva, torneo y marcador, además del mapeo HTTP 401/403/409/503: 17 pruebas en `ValidatorsTest`, `FormattersTest`, `ApiCallTest` y `ApiErrorMapperTest`.
 
 ## GitFlow
 
@@ -70,3 +50,9 @@ El desarrollo se realiza en ramas `feature/*` y se integra después en `develop`
 - `503/504`: microservicio temporalmente no disponible.
 
 Las capturas de pantalla quedan pendientes hasta ejecutar la app con usuarios Cognito reales.
+
+## Anexo: cliente web complementario
+
+En [`web/`](web/README.md) hay un cliente web desplegado en Vercel que **deriva de esta aplicación**, no la sustituye. La app Android es la fuente del contrato: `web/src/lib/types.ts` es espejo de `data/models/Models.kt`, `web/src/lib/validators.ts` lo es de `utils/Validators.kt`, y los mensajes de error replican `ApiErrorMapper`. Ambos clientes consumen el mismo gateway y el mismo App Client de Cognito.
+
+Se incorporó como evidencia adicional del criterio 4 (computación en la nube), donde demuestra un despliegue serverless real. **El criterio 2 de la rúbrica evalúa la aplicación móvil en Android Studio**, y esa evidencia sigue siendo íntegramente el proyecto Gradle de la raíz.

@@ -1,9 +1,28 @@
-# MatchPoint Web
+# MatchPoint Web — cliente complementario
+
+> **La aplicación principal del proyecto es la app Android de la raíz del repositorio.** Este
+> cliente web deriva de ella y no la sustituye: el criterio 2 de la rúbrica P02 evalúa una
+> aplicación móvil en Android Studio, y esa evidencia es el proyecto Gradle de la raíz. El aporte
+> de este módulo es al criterio 4 (computación en la nube). Ver
+> [docs/RUBRICA-CHECKLIST.md](../docs/RUBRICA-CHECKLIST.md).
 
 Cliente web de MatchPoint desplegado en Vercel. Consume **el mismo backend** que la app Android
 (microservicios `users` y `matchpoint` detrás del gateway Nginx) y usa **el mismo App Client de
 AWS Cognito**. No duplica lógica de negocio: el backend sigue siendo la única autoridad de
 permisos, propiedad y validación.
+
+## El contrato lo define la app Android
+
+Estos archivos son espejo del proyecto Android y deben actualizarse **después** de él, nunca antes:
+
+| Archivo web | Origen en la app Android |
+|---|---|
+| `src/lib/types.ts` | `app/src/main/java/ec/edu/puce/matchpoint/data/models/Models.kt` |
+| `src/lib/validators.ts` | `app/src/main/java/ec/edu/puce/matchpoint/utils/Validators.kt` |
+| `src/lib/api.ts` (traducción de errores) | `data/remote/ApiResult.kt` (`ApiErrorMapper`) |
+| `src/lib/format.ts` | `utils/Formatters.kt` |
+| `src/app/api/backend/[...path]/route.ts` | `data/remote/Network.kt` (`AuthInterceptor`, `TokenAuthenticator`) |
+| Navegación inferior y pantallas por rol | `MainActivity.kt`, `ui/screens/Screens.kt` |
 
 ## Por qué existe el proxy `/api/backend`
 
