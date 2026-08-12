@@ -11,7 +11,7 @@ El código está organizado en `data/models`, `data/remote`, `data/repository`, 
 ## Configuración
 
 1. Copia `local.properties.example` como `local.properties`.
-2. Configura `sdk.dir`, `COGNITO_APP_CLIENT_ID` y, si aplica, región/User Pool. No uses un app client con secret.
+2. Configura `sdk.dir`, `COGNITO_APP_CLIENT_ID` y, si aplica, región/User Pool. Debe ser un App Client nativo/público sin secret y con `ALLOW_USER_AUTH` habilitado. La app realiza `USER_AUTH`, solicita el desafío `PASSWORD` y lo responde sin guardar la contraseña.
 3. Para emulador usa `API_BASE_URL=http://10.0.2.2:9090/`; para dispositivo físico cambia `10.0.2.2` por la IP LAN del equipo.
 4. En el repositorio backend independiente crea `.env`, levanta `docker compose up -d --build` y confirma que Nginx escucha en 9090.
 5. Abre este proyecto en Android Studio o ejecuta `./gradlew assembleDebug`.

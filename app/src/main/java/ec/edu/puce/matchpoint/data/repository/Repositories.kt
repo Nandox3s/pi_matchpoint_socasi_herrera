@@ -7,8 +7,12 @@ import ec.edu.puce.matchpoint.data.remote.*
 class AuthRepository(private val api: CognitoApiService, private val session: SessionManager) {
     suspend fun login(username: String, password: String): ApiResult<UserRole> = apiCall {
         check(BuildConfig.COGNITO_APP_CLIENT_ID.isNotBlank()) { "Configura COGNITO_APP_CLIENT_ID en local.properties" }
-        val response = api.authenticate(CognitoAuthRequest("USER_PASSWORD_AUTH", BuildConfig.COGNITO_APP_CLIENT_ID, mapOf("USERNAME" to username, "PASSWORD" to password)))
-        val result = requireNotNull(response.AuthenticationResult) { "Cognito requiere completar: ${response.ChallengeName}" }
+        val start = api.authenticate(CognitoAuthRequest("USER_AUTH", BuildConfig.COGNITO_APP_CLIENT_ID, mapOf("USERNAME" to username, "PREFERRED_CHALLENGE" to "PASSWORD")))
+        val response = if (start.AuthenticationResult != null) start else {
+            require(start.ChallengeName == "PASSWORD" && !start.Session.isNullOrBlank()) { "Cognito requiere completar: ${start.ChallengeName}" }
+            api.respondToChallenge(CognitoChallengeRequest("PASSWORD", BuildConfig.COGNITO_APP_CLIENT_ID, start.Session, mapOf("USERNAME" to username, "PASSWORD" to password)))
+        }
+        val result = requireNotNull(response.AuthenticationResult) { "No se pudo completar la autenticación de Cognito." }
         session.save(requireNotNull(result.AccessToken), result.RefreshToken)
         requireNotNull(session.role) { "La cuenta no pertenece a PLAYER ni MANAGER" }
     }
