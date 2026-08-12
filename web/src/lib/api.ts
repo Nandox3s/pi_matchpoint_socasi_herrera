@@ -130,6 +130,26 @@ export async function signOut(): Promise<void> {
   await fetch("/api/auth/logout", { method: "POST" });
 }
 
+async function authRequest<T>(path: string, body: unknown): Promise<T> {
+  const response = await fetch(`/api/auth/${path}`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(body),
+  });
+  const payload = (await response.json()) as T & { error?: string };
+  if (!response.ok) throw new ApiError(payload.error ?? "No se pudo completar la solicitud.", response.status);
+  return payload;
+}
+
+export const registerAccount = (username: string, password: string, email: string) =>
+  authRequest<{ confirmed: boolean; destination?: string }>("register", { username, password, email });
+
+export const confirmAccount = (username: string, code: string) =>
+  authRequest<{ confirmed: boolean }>("confirm", { username, code });
+
+export const resendConfirmation = (username: string) =>
+  authRequest<{ destination?: string }>("confirm", { username, resend: true });
+
 /* --- Microservicio users --- */
 
 export const api = {

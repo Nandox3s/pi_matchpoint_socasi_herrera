@@ -145,6 +145,7 @@ export function Field({
   required = false,
   placeholder,
   autoComplete,
+  inputMode,
 }: {
   label: string;
   value: string;
@@ -157,6 +158,7 @@ export function Field({
   required?: boolean;
   placeholder?: string;
   autoComplete?: string;
+  inputMode?: "none" | "text" | "tel" | "url" | "email" | "numeric" | "decimal" | "search";
 }) {
   return (
     <label className="field">
@@ -171,6 +173,7 @@ export function Field({
         required={required}
         placeholder={placeholder}
         autoComplete={autoComplete}
+        inputMode={inputMode}
       />
       {hint ? <span className="field-hint">{hint}</span> : null}
     </label>
