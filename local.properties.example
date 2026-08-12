@@ -1,5 +1,5 @@
 sdk.dir=C\:\\Users\\YOUR_USER\\AppData\\Local\\Android\\Sdk
-API_BASE_URL=http://10.0.2.2:9090/
+API_BASE_URL=http://18.234.231.25:9090/
 COGNITO_REGION=us-east-1
 COGNITO_USER_POOL_ID=
 # App Client nativo/publico, sin client secret, con USER_AUTH habilitado.
