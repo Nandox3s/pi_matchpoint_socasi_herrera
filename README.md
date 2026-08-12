@@ -1,5 +1,7 @@
 # MatchPoint Mobile
 
+> La [matriz de cumplimiento de la rúbrica P02](docs/RUBRICA-CHECKLIST.md) reúne requisitos, ADR, arquitectura, nube, negocio y preparación de la sustentación con evidencia verificable.
+
 Aplicación Android de reservas deportivas y torneos conectada al backend real MatchPoint mediante Nginx, Retrofit y AWS Cognito.
 
 ## Tecnologías y arquitectura
