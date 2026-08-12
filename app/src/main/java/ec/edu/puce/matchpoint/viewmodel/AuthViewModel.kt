@@ -16,7 +16,7 @@ class AuthViewModel(private val repository: AuthRepository): ViewModel() {
     fun login(user: String, password: String) = viewModelScope.launch {
         if (user.isBlank() || password.length < 6) { _state.value = UiState.Error("Ingresa usuario y contraseña válida."); return@launch }
         _state.value = UiState.Loading
-        _state.value = when(val result = repository.login(user.trim(), password)) { is ApiResult.Success -> UiState.Success(result.data); is ApiResult.Error -> UiState.Error(result.message) }
+        _state.value = when(val result = repository.login(user.trim(), password)) { is ApiResult.Success -> UiState.Success(result.data); is ApiResult.Error -> UiState.Error(result.message,result.code) }
     }
     fun logout() { repository.logout(); _state.value = UiState.Idle }
 }
