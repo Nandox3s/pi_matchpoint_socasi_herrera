@@ -6,7 +6,7 @@ import ec.edu.puce.matchpoint.data.remote.*
 
 class AuthRepository(private val api: CognitoApiService, private val session: SessionManager) {
     suspend fun login(username: String, password: String): ApiResult<UserRole> = apiCall {
-        check(BuildConfig.COGNITO_APP_CLIENT_ID.isNotBlank()) { "Configura COGNITO_APP_CLIENT_ID en local.properties" }
+        check(IntegrationConfig.authError() == null) { IntegrationConfig.authError()!! }
         val start = api.authenticate(CognitoAuthRequest("USER_AUTH", BuildConfig.COGNITO_APP_CLIENT_ID, mapOf("USERNAME" to username, "PREFERRED_CHALLENGE" to "PASSWORD")))
         val response = if (start.AuthenticationResult != null) start else {
             require(start.ChallengeName == "PASSWORD" && !start.Session.isNullOrBlank()) { "Cognito requiere completar: ${start.ChallengeName}" }
