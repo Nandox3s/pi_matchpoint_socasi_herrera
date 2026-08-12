@@ -75,6 +75,17 @@ lib/api.ts         Cliente de navegador y traducción de errores (espejo de ApiE
 
 Ninguna lleva el prefijo `NEXT_PUBLIC_`: todas se leen únicamente en el servidor.
 
+## Registro de usuarios
+
+La pantalla de acceso permite crear y confirmar cuentas mediante las operaciones públicas `SignUp`,
+`ConfirmSignUp` y `ResendConfirmationCode` de Cognito. El User Pool debe tener habilitado el
+auto-registro por correo y el App Client no debe tener secret.
+
+Por seguridad, la web nunca permite elegir el grupo `MANAGER`. Las cuentas públicas deben entrar al
+grupo `PLAYER` mediante una automatización administrada en Cognito (por ejemplo, un trigger posterior
+a la confirmación) o mediante asignación administrativa. Después del primer inicio de sesión, el usuario
+completa su perfil mediante el contrato existente `POST /users/me`.
+
 ## Desarrollo local
 
 ```bash
