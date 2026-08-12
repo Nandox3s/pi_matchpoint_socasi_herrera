@@ -2,6 +2,8 @@
 
 MatchPoint Web requiere un proceso Node.js porque utiliza SSR, Route Handlers, el proxy `/api/backend` y cookies `httpOnly`. No debe desplegarse como sitio estático en S3.
 
+Para ejecutar la configuración en AWS Console paso a paso, usa [AWS_MANUAL_CHECKLIST.md](./AWS_MANUAL_CHECKLIST.md).
+
 ## Preparar EC2
 
 Instala Git, Docker Engine y Docker Compose. Clona el repositorio, entra en `web/`, copia `.env.production.example` como `.env.production` y completa los valores reales. El archivo real y las claves `*.pem` están ignorados por Git.
